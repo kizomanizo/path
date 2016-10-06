@@ -26,6 +26,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
     $scope.productsConfiguration=configurations.productsConfiguration;
     $scope.period=configurations.period;
     $scope.manufacturers = manufacturers;
+    $scope.orderDate = new Date();
 
 
     //////////////////////////////////////////////////////////////////////
@@ -49,12 +50,14 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
     $scope.data.allowMultipleScan = true;
     $scope.useBarcode = true;
     $scope.scanLotNumber = function(barcodeString ){
-        if(barcodeString !== ""){
+
+        if(barcodeString){
             $scope.barcode ={};
             $scope.barcode.lot_number = "";
             $scope.barcode.gtin = "";
             $scope.barcode.expiry = "";
             //check for the GS1 character
+            console.log(barcodeString)
             if(barcodeString.substring(0,3) === "]d2"){
                 if(barcodeString.length > 45){
                     var n = barcodeString.lastIndexOf("21");
@@ -107,7 +110,9 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
             if(str == '00'){
                 $scope.barcode.expiry = $scope.barcode.expiry.slice( 0, $scope.barcode.expiry.length-2 ) + '01'
             }
+            console.log($scope.barcode.expiry);
             $scope.barcode.formatedDate = $scope.formatDate(new Date("20"+$scope.barcode.expiry.replace(/(.{2})/g,"$1-").slice(0, -1)));
+            console.log($scope.barcode.formatedDate);
             $scope.current_item = $scope.getItemByGTIN($scope.barcode.gtin);
             if($scope.current_item.available === false){
                 $scope.data.error_loading_item = true;
@@ -247,7 +252,9 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                         newLot.lotCode=$scope.barcode.lot_number;
                         newLot.manufacturerName=$scope.barcode.manufacturename;
                         newLot.expirationDate=$scope.barcode.formatedDate;
+                        console.log($scope.barcode.formatedDate);
                         Lot.create(newLot,function(data){
+                            console.log(data);
                             //$scope.loadProductLots(product).
                             $scope.lotToUse = data.lot;
                             $scope.addProductFromBarcodeScanner();
@@ -302,6 +309,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
     $scope.isLotInSystem = function (lot,arr) {
         var control = {available:true,lot:{}};
         angular.forEach(arr,function(value){
+            console.log(value.lotCode +"==="+ lot);
             if(value.lotCode === lot){
                 control.available = false;
                 control.lot = value;

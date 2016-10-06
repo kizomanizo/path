@@ -26,7 +26,7 @@
                         </div>
                         <div class="span6">
                             <strong id="scan_area" >Scan Barcode </strong>:&nbsp;
-                            <input  id="barcode_string" type="text" class="form-control" style="width: 60%" ng-model="barcode_string" ng-change="scanLotNumber(barcode_string)"/>&nbsp;&nbsp;
+                            <input  id="barcode_string" type="text" class="form-control" style="width: 60%" ng-model="barcode_string" ng-blur="scanLotNumber(barcode_string)"/>&nbsp;&nbsp;
                             <span style="text-align: right;color: red" ng-show="data.loading_item"><img src="/public/images/loader.gif" style="height: 60px !important;"> loading information..</span>
                             <span style="text-align: right;color: red" ng-show="data.error_loading_item"> You do not have this batch on stock.</span>
                             <span style="text-align: right;color: red" ng-show="data.error_loading_gtin"> Packaging Information Not Found.</span>

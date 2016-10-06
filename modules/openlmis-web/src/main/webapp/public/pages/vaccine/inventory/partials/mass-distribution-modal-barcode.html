@@ -25,7 +25,7 @@
             </div>
             <div class="span5">
                 <strong id="scan_area" >Scan Barcode </strong>:&nbsp;
-                <input  id="barcode_string" type="text" class="form-control" ng-model="barcode_string" ng-change="scanLotNumber(barcode_string)"/>&nbsp;&nbsp;&nbsp;
+                <input  id="barcode_string" type="text" class="form-control" ng-model="barcode_string" ng-blur="scanLotNumber(barcode_string)"/>&nbsp;&nbsp;&nbsp;
                 <span><input style="height: 19px;width: 19px; margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;" type="checkbox" ng-model="data.allowMultipleScan"> Allow Scan To add Doses  </span>
                 <br><small>** Allow Scan To add Doses checked will add one box in each scan</small>
             </div>
