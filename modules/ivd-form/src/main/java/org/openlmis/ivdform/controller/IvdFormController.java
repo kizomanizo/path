@@ -11,6 +11,7 @@
  */
 package org.openlmis.ivdform.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import org.openlmis.core.service.FacilityService;
@@ -19,14 +20,24 @@ import org.openlmis.core.service.UserService;
 import org.openlmis.core.web.OpenLmisResponse;
 import org.openlmis.core.web.controller.BaseController;
 import org.openlmis.ivdform.domain.reports.VaccineReport;
+import org.openlmis.ivdform.exceptions.OutOfOrderFormSubmissionException;
 import org.openlmis.ivdform.service.IvdFormService;
+import org.openlmis.ivdform.view.pdf.SubmissionResponseModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.util.Date;
 
 @Controller
@@ -57,7 +68,7 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(PERIODS, service.getPeriodsFor(facilityId, programId, new Date()));
   }
 
-  @RequestMapping(value = {"/vaccine/report/view-periods/{facilityId}/{programId}", "/rest-api/ivd/view-periods/{facilityId}/{programId}"} , method = RequestMethod.GET)
+  @RequestMapping(value = {"/vaccine/report/view-periods/{facilityId}/{programId}", "/rest-api/ivd/view-periods/{facilityId}/{programId}"}, method = RequestMethod.GET)
   @ApiOperation(position = 3, value = "Get Periods for Which facility has IVD Submissions")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'VIEW_IVD')")
   public ResponseEntity<OpenLmisResponse> getViewPeriods(@PathVariable Long facilityId, @PathVariable Long programId) {
@@ -83,7 +94,7 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, service.getById(id));
   }
 
-  @RequestMapping(value = {"/vaccine/report/save", "/rest-api/ivd/save"}, method = {RequestMethod.PUT, RequestMethod.POST})
+  @RequestMapping(value = {"/vaccine/report/save"}, method = {RequestMethod.PUT})
   @ApiOperation(position = 5, value = "Save IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> save(@RequestBody VaccineReport report, HttpServletRequest request) {
@@ -91,7 +102,32 @@ public class IvdFormController extends BaseController {
     return OpenLmisResponse.response(REPORT, report);
   }
 
-  @RequestMapping(value = {"/vaccine/report/submit", "/rest-api/ivd/submit"} , method = {RequestMethod.PUT, RequestMethod.POST})
+  @RequestMapping(value = {"/rest-api/ivd-from-pdf/save"}, method = {RequestMethod.POST}, consumes = MediaType.ALL_VALUE)
+  @ApiOperation(position = 5, value = "Save IVD form")
+  @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
+  public ModelAndView saveFromPDF(HttpServletRequest request) throws ParserConfigurationException, IOException, SAXException {
+    ModelAndView modelAndView = new ModelAndView("ivdFormResponseView");
+    SubmissionResponseModel model;
+    try {
+      DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+      Document doc = dBuilder.parse(request.getInputStream());
+      ObjectMapper mapper = new ObjectMapper();
+      VaccineReport report = mapper.readValue(doc.getDocumentElement().getTextContent().toString(), VaccineReport.class);
+
+      service.submitFromOtherApplications(report, loggedInUserId(request));
+      model = new SubmissionResponseModel(messageService.message("ivd.form.successfully.submitted"), false);
+    } catch(OutOfOrderFormSubmissionException exp){
+      model = new SubmissionResponseModel(messageService.message(exp.getMessage()) + " Expected period was " +  exp.getExpected() + " but submission was for " + exp.getFound(), true);
+    }
+    catch (Exception exp) {
+      model = new SubmissionResponseModel(messageService.message(exp.getMessage()), true);
+    }
+    modelAndView.addObject("STATUS", model);
+    return modelAndView;
+  }
+
+  @RequestMapping(value = {"/vaccine/report/submit", "/rest-api/ivd/submit"}, method = {RequestMethod.PUT, RequestMethod.POST})
   @ApiOperation(position = 6, value = "Submit IVD form")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'CREATE_IVD')")
   public ResponseEntity<OpenLmisResponse> submit(@RequestBody VaccineReport report, HttpServletRequest request) {
@@ -101,7 +137,7 @@ public class IvdFormController extends BaseController {
 
   @RequestMapping(value = "/vaccine/report/approval-pending")
   @PreAuthorize("@permissionEvaluator.hasPermission(principal,'APPROVE_IVD')")
-  public ResponseEntity<OpenLmisResponse> getPendingFormsForApproval(@RequestParam("program") Long programId, HttpServletRequest request){
+  public ResponseEntity<OpenLmisResponse> getPendingFormsForApproval(@RequestParam("program") Long programId, HttpServletRequest request) {
     return OpenLmisResponse.response(PENDING_SUBMISSIONS, service.getApprovalPendingForms(this.loggedInUserId(request), programId));
   }
 
