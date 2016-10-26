@@ -19,17 +19,40 @@
   <div class="toggleFullScreen">
     <div class="header row-fluid">
 
-      <div class="span9">
+      <div class="span8">
         <div class="logo clearfix">
-          <img src="/public/images/logo.png"/>
+          <img src="http://vims.moh.go.tz/public/v1476814324215/images/logo.png">
 
-          <h1 openlmis-message="label.app.header"></h1>
+          <h1>Vaccine Information Management System (VIMS)</h1>
         </div>
       </div>
-      <div id="loader" class="loader-icon"></div>
-      <div class="span3" ng-show="!!user">
-        <ng-include src="'/public/pages/user.html'"></ng-include>
+      <div id="loader" class="loader-icon" style="display: none;"></div>
+      <div class="span4" ng-show="!!user">
+        <div class="pull-right">
+          <img style="padding:5px" src="http://vims.moh.go.tz/public/v1476814324215/images/logo-right.jpg">
+        </div>
+        <ng-include src="'/public/pages/user.html'" class="ng-scope">
+        <div class="user-info ng-scope">
+          <span openlmis-message="message.loggedInAs">Logged in as</span>&nbsp;<strong class="ng-binding">Vims Admin</strong> <a href="/public/pages/admin/user/preference/index.html#/edit-user-preference/307">
+          <span id="user-tab" openlmis-message="menu.header.edit.preferences">Profile</span></a> | <a id="logout" ng-click="logout()" href="" openlmis-message="link.logout">Logout</a>
+        </div>
+      </ng-include>
       </div>
     </div>
+
+    <!--<div class="header row-fluid">-->
+
+      <!--<div class="span9">-->
+        <!--<div class="logo clearfix">-->
+          <!--<img src="/public/images/logo.png"/>-->
+
+          <!--<h1 openlmis-message="label.app.header"></h1>-->
+        <!--</div>-->
+      <!--</div>-->
+      <!--<div id="loader" class="loader-icon"></div>-->
+      <!--<div class="span3" ng-show="!!user">-->
+        <!--<ng-include src="'/public/pages/user.html'"></ng-include>-->
+      <!--</div>-->
+    <!--</div>-->
   </div>
 </div>
