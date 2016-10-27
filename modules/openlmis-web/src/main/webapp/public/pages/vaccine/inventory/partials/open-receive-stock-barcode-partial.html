@@ -22,6 +22,13 @@
 
     </ul>
 </div>
+<!--barcode errors-->
+<div class="alert alert-danger" ng-show="data.error_loading_gtin">{{ incorrect_message }}</div>
+<!--barcode information-->
+<div class="alert alert-info" ng-show="!data.error_loading_gtin && current_item.available && useBarcode" style="margin: 0px; padding: 3px">
+    Last scanned item is {{ current_item.product.product.primaryName }}, Batch Number {{ barcode.lot_number }} with  GTIN of {{ current_item.product.product.packaging.gtin }} expiring at {{ barcode.formatedDate }}
+    having {{ current_item.product.product.packaging.vialsperbox }} vials in a box and each vial having {{ current_item.product.product.packaging.dosespervial }} doses
+</div>
 
 <div ng-if="!useBarcode">
     <table  class="table table-bordered receive">
@@ -181,7 +188,10 @@
             <th class="col-product" style="min-width:20px !important;max-width:120px !important; width:160px !important"> <br/><span openlmis-message="label.unit.of.measure"></span></th>
             <th class="col-lot" style="width:300px !important;max-width:300px !important"><span openlmis-message="label.stock.batch"></span></th>
             <th class="col-vvm-status" style="width:150px !important;max-width:150px !important"><span openlmis-message="label.stock.vvm"></span></th>
-            <th class="col-quantity" style="width:150px !important;max-width:150px !important"><span openlmis-message="label.stock.quantity"></span></th>
+            <th ng-if="useBarcode" class="col-quantity" style="max-width:160px !important">Boxes</th>
+            <th ng-if="useBarcode" class="col-quantity" style="max-width:160px !important">Lose Vials</th>
+            <th ng-if="useBarcode" class="col-quantity" style="max-width:160px !important">Doses</th>
+            <th ng-if="!useBarcode" class="col-quantity" style="width:150px !important;max-width:150px !important"><span openlmis-message="label.stock.quantity"></span></th>
             <th class="col-add-lot" style="width:150px !important;max-width:150px !important"><span openlmis-message="label.stock.add.lot"></span></th>
             <th class="col-add-product"><span openlmis-message="label.stock.add.product"></span></th>
         </tr>
@@ -206,8 +216,28 @@
                 <span ng-if="!product.batchTracked">&nbsp;</span>
             </td>
             <td class="col-count cell-input cell-text col-general disabled" ng-class="{'last-row':product.lots.length===1, 'skip':!product.vvmTracked}">
-                <span class="cell-text" ng-if="product.vvmTracked"  ng-bind="product.lots[0].vvmStatus"></span>
+                <select ng-show="product.vvmTracked === true"
+                        ng-required="productToAdd.vvmTracked ===true" ui-select2
+                        style="max-width:130px !important;min-width:130px !important"
+                        ng-options="i.value as i.name for i in vvmStatuses"
+                        name="vvmToAdd"
+                        ng-model="product.lots[0].vvmStatus">
+                    <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
+                    </select>
             </td>
+            <!--boxes-->
+            <td ng-if="useBarcode"  class="col-count cell-input col-general" ng-class="{'last-row':product.lots.length <=1}" style="max-width: 100px!important;">
+                <input ng-if="product.batchTracked" ng-required="product.lots.length > 0" ng-if="product.lots.length > 0" style="margin-bottom: 0px"
+                       name="batchQuantity_{{$index}}_0" ng-model="product.lots[0].boxes_quantity" min="1" ng-change="updateValue(product.lots[0],product)"
+                       type="number"/>
+            </td>
+            <!--lose vials-->
+            <td ng-if="useBarcode"  class="col-count cell-input col-general" ng-class="{'last-row':product.lots.length <=1}" style="max-width: 100px!important;">
+                <input ng-if="product.batchTracked" ng-if="product.lots.length > 0" style="margin-bottom: 0px"
+                       name="batchQuantity_{{$index}}_0" ng-model="product.lots[0].vials_quantity" min="1" ng-change="updateValue(product.lots[0],product)"
+                       type="number"/>
+            </td>
+            <!--Doses-->
             <td  class="col-count cell-input col-general" ng-class="{'last-row':product.lots.length <=1}">
                 <input ng-required="product.lots.length > 0" ng-if="product.lots.length > 0"
                        name="{{product.product.primaryName}} Batch {{product.lots[0].lot.lotCode}}"
@@ -239,9 +269,30 @@
                 <span class="cell-text" ng-bind="lot.lot.lotCode"></span>
             </td>
             <td  ng-class="{'last-row':$last}" class="col-count cell-input cell-text col-general disabled">
-                <span class="cell-text" ng-if="product.batchTracked && product.vvmTracked" ng-bind="lot.vvmStatus"></span>
+                <select ng-show="product.batchTracked && product.vvmTracked"
+                        ng-required="productToAdd.vvmTracked ===true" ui-select2
+                        style="max-width:130px !important;min-width:130px !important"
+                        ng-options="i.value as i.name for i in vvmStatuses"
+                        name="vvmToAdd"
+                        ng-model="lot.vvmStatus">
+                    <option value="" openlmis-message="placeholder.select.vvmstatus"></option>
+                </select>
                 <span ng-if="product.batchTracked && !product.vvmTracked " class="skip">&nbsp;</span>
             </td>
+
+            <!--Boxes-->
+            <td ng-if="useBarcode" ng-if="product.batchTracked" ng-class="{'last-row':$last}"
+                class="col-count cell-input col-general " style="max-width: 100px!important;">
+                <input name="batchBoxesQuantity_{{$parent.$index}}_{{$index}}" ng-required="product.batchTracked" style="margin-bottom: 0px"
+                       ng-model="lot.boxes_quantity" min="1" type="number" ng-change="updateValue(lot,product)"/>
+            </td>
+            <!--Vials-->
+            <td ng-if="useBarcode" ng-if="product.batchTracked" ng-class="{'last-row':$last}"
+                class="col-count cell-input col-general " style="max-width: 100px!important;">
+                <input style="margin-bottom: 0px" name="batchVialsQuantity_{{$parent.$index}}_{{$index}}"
+                       ng-model="lot.vials_quantity" min="1" type="number" ng-change="updateValue(lot,product)"/>
+            </td>
+            <!--Doses-->
             <td ng-if="product.batchTracked" ng-class="{'last-row':$last}"
                 class="col-count cell-input col-general ">
                 <input

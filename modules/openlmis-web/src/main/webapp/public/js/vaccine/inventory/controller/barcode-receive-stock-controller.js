@@ -101,7 +101,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                 $scope.data.error_loading_gtin = true;
                 $timeout(function(){
                     $scope.data.error_loading_gtin = false;
-                },2000);
+                },3000);
                 $scope.data.error_loading_item = false;
                 $scope.data.loading_item = false;
             }
@@ -122,7 +122,8 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                 if(confirmation){
                     $scope.current_item = $scope.getItemByGTIN($scope.barcode.gtin);
                     if($scope.current_item.available === false){
-                        $scope.data.error_loading_item = true;
+                        $scope.data.error_loading_gtin = true;
+                        $scope.incorrect_message = "Packaging Information was not found";
                         $timeout(function(){
                             $scope.data.error_loading_gtin = false;
                         },2000);
@@ -136,7 +137,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                         angular.element(jQuery('#barcode_string')).triggerHandler('input');
                         $("#barcode_string").focus();
                     }else{
-                        $scope.data.error_loading_item = false;
+                        $scope.data.error_loading_gtin = false;
                         $scope.data.loading_item = false;
                         $scope.data.show_singleItem = true;
                         $scope.data.process_package = false;
@@ -155,7 +156,8 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
             }else{
                 $scope.current_item = $scope.getItemByGTIN($scope.barcode.gtin);
                 if($scope.current_item.available === false){
-                    $scope.data.error_loading_item = true;
+                    $scope.incorrect_message = "Packaging Information was not found";
+                    $scope.data.error_loading_gtin = true;
                     $timeout(function(){
                         $scope.data.error_loading_gtin = false;
                     },2000);
@@ -169,7 +171,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                     angular.element(jQuery('#barcode_string')).triggerHandler('input');
                     $("#barcode_string").focus();
                 }else{
-                    $scope.data.error_loading_item = false;
+                    $scope.data.error_loading_gtin = false;
                     $scope.data.loading_item = false;
                     $scope.data.show_singleItem = true;
                     $scope.data.process_package = false;
@@ -200,6 +202,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                         $scope.productToAdd.product = product.programProduct.product;
                         $scope.productToAdd.product.productCategory = product.programProduct.productCategory;
                         product.programProduct.product.packaging = value;
+                        item.product = $scope.productToAdd;
                         $scope.prepareProductLots($scope.productToAdd.product);
                     }
                 });
@@ -211,7 +214,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
 
     $scope.addProductFromBarcodeScanner = function(){
         $scope.lotToAdd.lot = $scope.lotToUse;
-        $scope.lotToAdd.vvmStatus = '';
+        $scope.lotToAdd.vvmStatus = 1;
         $scope.lotToAdd.quantity = '';
         $scope.lotToAdd.boxes_quantity = '';
         $scope.lotToAdd.vials_quantity = '';
@@ -391,7 +394,8 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
 
     //switching between Normal and Barcode format
     $scope.switchBarcodeToNormal = function(){
-        if($scope.useBarcode){
+        $("#barcode_string").focus();
+        if(!$scope.useBarcode){
             $scope.productsToDisplay=$scope.allProducts;
             angular.forEach($scope.receivedProducts,function(product){
                 angular.forEach($scope.gtin_lookups,function(package){
@@ -405,12 +409,14 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                     });
                 }
             });
+            categorise($scope.receivedProducts);
             $("#barcode_string").focus();
-            $scope.useBarcode = false;
+            $scope.useBarcode = true;
         }else{
             categorise($scope.receivedProducts);
             updateProductToDisplay($scope.receivedProducts);
-            $scope.useBarcode = true;
+            $scope.useBarcode = false;
+
         }
     };
 
