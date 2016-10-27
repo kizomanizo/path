@@ -26,7 +26,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
     $scope.period=configurations.period;
     $scope.manufacturers = manufacturers;
     $scope.isTransferIn=($location.url() ==='/transfer-in')?true:undefined;
-    $scope.orderDate = new Date();
+
 //    console.log($location.url());
 
     //////////////////////////////////////////////////////////////////////
@@ -391,6 +391,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
 
         return [year, month, day].join('-');
     };
+    $scope.orderDate = $scope.formatDate( new Date() );
 
     //switching between Normal and Barcode format
     $scope.switchBarcodeToNormal = function(){
