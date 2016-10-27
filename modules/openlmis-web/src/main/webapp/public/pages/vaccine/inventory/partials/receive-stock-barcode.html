@@ -188,6 +188,23 @@
                     <ng-include src="'/public/pages/vaccine/inventory/partials/voucher-receive-stock-partial.html'"></ng-include>
                 </div>
             </div>
+
+            <!--if someone doesnt have stock-->
+            <div ng-show="!hasStock && hasPermission('INITIALIZE_STOCK') && useBarcode">
+                <div>
+                    <div>
+                        <strong>Scan Item </strong>
+                        <span class="label-required"></span>:&nbsp;&nbsp;
+                        <input ng-if="hasStock" id="barcode_string" type="text" class="form-control" ng-model="barcode_string" ng-blur="scanLotNumber(barcode_string)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="opacity: .7">
+                                            <input style="height: 19px;width: 19px; margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;" type="checkbox" ng-model="data.allowMultipleScan">
+                                            Add Doses
+                                        </span>
+                        <br><small style="opacity: .7">** Add Doses checked will add one box in each scan</small>
+
+                    </div>
+                </div>
+            </div>
             <div ng-show="!isTransferIn && (hasPermission('OPEN_STOCK_RECEIVING_PROCESS') || hasPermission('INITIALIZE_STOCK') || !hasStock)">
                 <ng-include src="'/public/pages/vaccine/inventory/partials/open-receive-stock-barcode-partial.html?i=21'"></ng-include>
             </div>
