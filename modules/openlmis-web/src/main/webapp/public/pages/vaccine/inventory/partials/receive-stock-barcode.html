@@ -190,8 +190,8 @@
             </div>
 
             <!--if someone doesnt have stock-->
-            <div ng-show="!hasStock && hasPermission('INITIALIZE_STOCK') && useBarcode">
-                <div>
+            <div ng-show="!hasStock || hasPermission('INITIALIZE_STOCK')">
+                <div ng-show="useBarcode">
                     <div>
                         <strong>Scan Item </strong>
                         <span class="label-required"></span>:&nbsp;&nbsp;
