@@ -1,14 +1,13 @@
 /*
- * This program was produced for the U.S. Agency for International Development. It was prepared by the USAID | DELIVER PROJECT, Task Order 4. It is part of a project which utilizes code originally licensed under the terms of the Mozilla Public License (MPL) v2 and therefore is licensed under MPL v2 or later.
+ * Electronic Logistics Management Information System (eLMIS) is a supply chain management system for health commodities in a developing country setting.
  *
- * This program is free software: you can redistribute it and/or modify it under the terms of the Mozilla Public License as published by the Mozilla Foundation, either version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2015 Clinton Health Access Initiative (CHAI)/MoHCDGEC Tanzania.
  *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the Mozilla Public License for more details.
- *
- * You should have received a copy of the Mozilla Public License along with this program. If not, see http://www.mozilla.org/MPL/
- */
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$routeParams,StockCardsByCategory,configurations,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
+ */
+function BarcodeStockAdjustmentController($scope, $timeout,$window,$routeParams,$dialog,$log,$http,StockCardsByCategory,configurations,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
 
     //Get Home Facility
     $scope.currentStockLot = undefined;
@@ -18,6 +17,10 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
     $scope.vvmStatuses=[{"value":"1","name":" 1 "},{"value":"2","name":" 2 "}];
     $scope.productsConfiguration=configurations.productsConfiguration;
     var AdjustmentReasons=[];
+
+    //////////////////////////////////////////////////////////////////////////////
+    ////////////////These codes have been added by Kelvin for barcode/////////////
+    ////////////////////////////////////////////////////////////////////////////
     $scope.data = {};
     $scope.data.allowMultipleScan = true;
     $scope.useBarcode = true;
@@ -51,7 +54,7 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
 
     //react to scanning of lot number
     $scope.scanLotNumber = function(barcodeString){
-        if(barcodeString !== ""){
+        if(barcodeString){
             $scope.barcode ={};
             $scope.barcode.lot_number = "";
             $scope.barcode.gtin = "";
@@ -68,9 +71,7 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
                     $scope.barcode.expiry = barcodeString.substring(21,27);
                     $scope.barcode.gtin = barcodeString.substring(5,19);
                 }else{
-                    $scope.data.error_loading_gtin = true;
-                    $scope.data.error_loading_item = false;
-                    $scope.data.loading_item = false;
+                    $scope.errorOccurred("String does not match expected format");
                 }
             }else if(barcodeString.substring(0,2) === "01"){
                 if(barcodeString.length > 45){
@@ -83,15 +84,11 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
                     $scope.barcode.expiry = barcodeString.substring(18,24);
                     $scope.barcode.gtin = barcodeString.substring(2,16);
                 }else{
-                    $scope.data.error_loading_gtin = true;
-                    $scope.data.error_loading_item = false;
-                    $scope.data.loading_item = false;
+                    $scope.errorOccurred("String does not match expected format");
                 }
 
             }else{
-                $scope.data.error_loading_gtin = true;
-                $scope.data.error_loading_item = false;
-                $scope.data.loading_item = false;
+                $scope.errorOccurred("String does not match expected format");
             }
 
 
@@ -104,37 +101,27 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
             $scope.barcode.formatedDate = $scope.formatDate(new Date("20"+$scope.barcode.expiry.replace(/(.{2})/g,"$1-").slice(0, -1)));
             $scope.current_item = $scope.getItemByGTIN($scope.barcode , $scope.productsInList);
             if($scope.current_item.gtinInformation === false){
-                $scope.data.error_loading_gtin = true;
-                $timeout(function(){
-                    $scope.data.error_loading_gtin = false;
-                },2000);
-                $scope.data.error_loading_item = false;
-                $scope.data.loading_item = false;
-                var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");
-                snd.play();
+                $scope.errorOccurred("There is no information about this product");
             }else{
                 $scope.data.error_loading_gtin = false;
                 $scope.data.error_loading_item = false;
                 $scope.data.loading_item = true;
                 if($scope.current_item.available === false){
-                    $scope.data.error_loading_item = true;
-                    $timeout(function(){
-                        $scope.data.error_loading_item = false;
-                    },2000);
-                    $scope.data.loading_item = false;
-                    var snd = new Audio("data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=");
-                    snd.play();
+                    $scope.errorOccurred("You do not have this item in store");
                 }else{
-
                     $scope.data.error_loading_item = false;
                     $scope.data.loading_item = false;
                     $scope.data.show_singleItem = true;
                     $scope.data.process_package = false;
+                    $("#barcode_string").val('');
+                    angular.element(jQuery('#barcode_string')).triggerHandler('input');
+                    $("#barcode_string").focus();
+                    $scope.show_incorrect_message = false;
                 }
             }
 
         }else{
-            $scope.data.error_loading_gtin = false;
+            $scope.show_incorrect_message = false;
             $scope.data.error_loading_item = false;
             $scope.data.loading_item = false;
         }
@@ -165,7 +152,7 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
                     if(packagingInformation.productid == product.product.id){
                         //append packaging information
                         product.packaging = packagingInformation;
-
+                        item.product = product;
                         //construct a lot
                         var lots = angular.copy(product.lotsOnHand);
                         angular.forEach(lots,function(productLot){
@@ -380,11 +367,11 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
     };
 
     //loading stock cards...added some functionality to allow barcode
-    var loadStockCards=function(programId, facilityId,useBarcode){
+    var loadStockCards=function(programId, facilityId ){
         //@todo Put these data in local storage and update the method to fetch from local store
         StockCardsByCategory.get(programId,facilityId).then(function(data){
             $scope.stockCardsToDisplay=data;
-            if(useBarcode){
+            if($scope.useBarcode){
                 //These codes have been added by Kelvin
                 if($scope.stockCardsToDisplay.length !== 0){
                     angular.forEach($scope.stockCardsToDisplay,function(lineItem,index){
@@ -407,6 +394,32 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
             });
         });
     };
+
+    $scope.errorOccurred = function (error_message) {
+        var snd = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU'+Array(1e3).join(123));
+        snd.play();
+        $scope.incorrect_message = error_message;
+        $scope.show_incorrect_message = true;
+        $timeout(function(){
+            $scope.show_incorrect_message = false;
+        },4000);
+        $("#barcode_string").val('');
+        angular.element(jQuery('#barcode_string')).triggerHandler('input');
+        $("#barcode_string").focus();
+    }
+    ///////////////////////////////////////////////////////////////////////////
+    /////////////////End of codes added by kelvin ////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+
+
+    // var loadStockCards=function(programId, facilityId){
+    //     StockCardsByCategory.get(programId,facilityId).then(function(data){
+    //         $scope.stockCardsToDisplay=data;
+    //         VaccineAdjustmentReasons.get({programId:programId},function(data){
+    //             $scope.adjustmentTypes=data.adjustmentReasons;
+    //         });
+    //     });
+    // };
     if(homeFacility){
         $scope.homeFacility = homeFacility;
         $scope.homeFacilityId=homeFacility.id;
@@ -418,14 +431,12 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
         $scope.showPrograms=true;
         //TODO: load stock cards on program change
         $scope.selectedProgramId=$scope.userPrograms[0].id;
-        loadStockCards(parseInt($scope.selectedProgramId,10),parseInt($scope.selectedFacilityId,10),$scope.useBarcode);
-
+        loadStockCards(parseInt($scope.selectedProgramId,10),parseInt($scope.selectedFacilityId,10));
     }
     else if($scope.userPrograms.length === 1){
         $scope.showPrograms=false;
         $scope.selectedProgramId=$scope.userPrograms[0].id;
-        loadStockCards(parseInt($scope.selectedProgramId,10),parseInt($scope.selectedFacilityId,10),$scope.useBarcode);
-
+        loadStockCards(parseInt($scope.selectedProgramId,10),parseInt($scope.selectedFacilityId,10));
     }
 
     $scope.date = new Date();
@@ -486,62 +497,88 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
 
     };
     $scope.updateStock=function(){
-        console.log(JSON.stringify($scope.adjustmentForm));
+
         if($scope.adjustmentForm.$invalid)
         {
+            console.log(JSON.stringify($scope.adjustmentForm));
             $scope.showFormError=true;
             return;
         }
-        var events=[];
-        $scope.stockCardsToDisplay.forEach(function(st){
-            st.stockCards.forEach(function(s){
-                if(s.lotsOnHand !==undefined && s.lotsOnHand.length>0){
-                    s.lotsOnHand.forEach(function(l){
-                        if(l.quantity !== undefined)
-                        {
-                            l.adjustmentReasons.forEach(function(reason){
-                                var event={};
-                                event.type= "ADJUSTMENT";
-                                event.productCode=s.product.code;
-                                event.quantity=reason.quantity;
-                                event.lotId=l.lot.id;
-                                event.reasonName=reason.name;
-                                if(l.customProps !==null && l.customProps.vvmstatus !==undefined)
+
+        var callBack=function(result){
+            if(result){
+                var events=[];
+                $scope.stockCardsToDisplay.forEach(function(st){
+                    st.stockCards.forEach(function(s){
+                        if(s.lotsOnHand !==undefined && s.lotsOnHand.length>0){
+                            s.lotsOnHand.forEach(function(l){
+                                if(l.quantity !== undefined && (l.quantity - l.quantityOnHand) !== 0)
                                 {
-                                    event.customProps={"vvmStatus":l.customProps.vvmstatus};
+                                    l.adjustmentReasons.forEach(function(reason){
+                                        var event={};
+                                        event.type= "ADJUSTMENT";
+                                        event.productCode=s.product.code;
+                                        event.quantity=reason.quantity;
+                                        event.lotId=l.lot.id;
+                                        event.reasonName=reason.name;
+                                        if(l.customProps !==null && l.customProps.vvmstatus !==undefined)
+                                        {
+                                            event.customProps={"vvmStatus":l.customProps.vvmstatus};
+                                        }
+                                        events.push(event);
+                                    });
                                 }
-                                events.push(event);
                             });
                         }
+                        else{
+                            if(s.quantity !==undefined)
+                            {
+                                s.adjustmentReasons.forEach(function(reason){
+                                    var event={};
+                                    event.type= "ADJUSTMENT";
+                                    event.productCode=s.product.code;
+                                    event.quantity=reason.quantity;
+                                    event.reasonName=reason.name;
+                                    events.push(event);
+                                });
+                            }
+                        }
                     });
-                }
-                else{
-                    if(s.quantity !==undefined)
+                });
+                StockEvent.save({facilityId:homeFacility.id},events, function (data) {
+                    if(data.success !==null)
                     {
-                        s.adjustmentReasons.forEach(function(reason){
-                            var event={};
-                            event.type= "ADJUSTMENT";
-                            event.productCode=s.product.code;
-                            event.quantity=reason.quantity;
-                            event.reasonName=reason.name;
-                            events.push(event);
-                        });
+                        $scope.message=data.success;
+                        $timeout(function(){
+                            $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
+                        },900);
                     }
-                }
-            });
-        });
-        StockEvent.save({facilityId:homeFacility.id},events, function (data) {
-            if(data.success !==null)
-            {
-                $scope.message=data.success;
-                $timeout(function(){
-                    $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
-                },900);
+                });
             }
-        });
+        };
+
+        var options = {
+            id: "confirmDialog",
+            header: "label.confirm.adjust.stock.action",
+            body: "msg.question.adjust.stock.confirmation"
+        };
+        OpenLmisDialog.newDialog(options, callBack, $dialog);
     };
     $scope.cancel=function(){
-        $window.location='/public/pages/vaccine/inventory/dashboard/index.html#/stock-on-hand';
+        $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';
+    };
+
+    $scope.reasonChange=function(){
+        var reasonName=$scope.adjustmentReason.type.name;
+        var lotExpirationTime=new Date($scope.currentStockLot.lot.expirationDate).getTime();
+        var toDayTime=new Date().getTime();
+        if(reasonName === "EXPIRED_VIMS" && (lotExpirationTime - toDayTime) >0 )
+        {
+            $scope.expirationInvalid=true;
+        }
+        else{
+            $scope.expirationInvalid=false;
+        }
     };
 
 
@@ -607,7 +644,6 @@ function BarcodeStockAdjustmentController($scope,$log, $http, $timeout,$window,$
     };
 
 }
-
 BarcodeStockAdjustmentController.resolve = {
 
     homeFacility: function ($q, $timeout,UserFacilityList) {
@@ -616,7 +652,6 @@ BarcodeStockAdjustmentController.resolve = {
 
         $timeout(function () {
             //Home Facility
-            //@todo Put these data in local storage and update the method to fetch from local store
             UserFacilityList.get({}, function (data) {
                 homeFacility = data.facilityList[0];
                 deferred.resolve(homeFacility);
@@ -629,7 +664,6 @@ BarcodeStockAdjustmentController.resolve = {
         var deferred = $q.defer();
         var configurations={};
         $timeout(function () {
-            //@todo Put these data in local storage and update the method to fetch from local store
             AllVaccineInventoryConfigurations.get(function(data)
             {
                 configurations=data;
