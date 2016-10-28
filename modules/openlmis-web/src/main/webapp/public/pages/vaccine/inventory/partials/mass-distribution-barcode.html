@@ -396,7 +396,7 @@
                         <strong id="scan_area" >Scan Barcode </strong>:&nbsp;
                         <input  id="barcode_string" type="text" class="form-control" ng-model="barcode_string" ng-blur="scanLotNumber(barcode_string)"/>&nbsp;&nbsp;&nbsp;
                         <span><input style="height: 19px;width: 19px; margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;" type="checkbox" ng-model="data.allowMultipleScan"> Add Doses  </span>
-                        <br><small>** Allow Scan To add Doses checked will add one box in each scan</small>
+                        <br><small>** Add Doses checked will add one box in each scan</small>
                     </div>
                     <!--<div class="span3">-->
                         <!--<strong id='issueTypeLabel' openlmis-message="label.type"> </strong>:&nbsp;-->
@@ -405,6 +405,11 @@
                 </div>
             </div>
             <div class="alert alert-danger" ng-show="showNoProductErrorMessage" openlmis-message="error.message.no.product.to.issue"></div>
+            <div class="alert alert-danger" ng-show="show_incorrect_message">{{ incorrect_message }}</div>
+            <div class="alert alert-info" ng-show="!show_incorrect_message && current_item.available && useBarcode" style="margin: 0px; padding: 3px">
+                Last scanned item is {{ current_item.product.name }}, Batch Number {{ barcode.lot_number }} with  GTIN of {{ current_item.product.packaging.gtin }} expiring at {{ barcode.formatedDate }}
+                having {{ current_item.product.packaging.vialsperbox }} vials in a box and each vial having {{ current_item.product.packaging.dosespervial }} doses
+            </div>
             <div class="alert alert-danger"
                  ng-show="issueForm.$dirty && (issueForm.$error.divisibleByPresentationValidator.length >0 || issueForm.$error.maximumValidator.length >0)">
                 <ul ng-show="issueForm.$error.divisibleByPresentationValidator.length >0 || issueForm.$error.maximumValidator.length >0">
