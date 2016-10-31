@@ -79,11 +79,11 @@ public class VaccineInventoryDistributionService {
         ProcessingPeriod period = null;
         if (null != distribution.getToFacilityId() && null != distribution.getProgramId()) {
             period = getCurrentPeriod(distribution.getToFacilityId(), distribution.getProgramId());
-            try {
-                Runtime.getRuntime().exec("python /var/www/html/test.py "+distribution.getToFacilityId());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                Runtime.getRuntime().exec("python /var/www/html/test.py "+distribution.getToFacilityId());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
         }
         if (period != null) {
             distribution.setPeriodId(period.getId());
