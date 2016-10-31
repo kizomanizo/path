@@ -102,6 +102,7 @@ function SaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveD
              if(data.success)
              {
                  SaveDistribution.save(distribution,function(distribution){
+                     console.log(distribution)
                       $scope.showMessages();
 
                       $scope.distributionId=distribution.distributionId;

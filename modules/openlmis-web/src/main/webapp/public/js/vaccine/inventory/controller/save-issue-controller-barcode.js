@@ -8,9 +8,11 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
 
-function BarcodeSaveIssueController($scope,$location, $window,$timeout,StockEvent,SaveDistribution) {
+function BarcodeSaveIssueController($scope, $location, $http, $window, $timeout, StockEvent, SaveDistribution) {
 
     $scope.distribute=function(type){
+
+
         $scope.allProductsZero=true;
         $scope.clearErrorMessages();
         var printWindow;
@@ -38,7 +40,8 @@ function BarcodeSaveIssueController($scope,$location, $window,$timeout,StockEven
         var events = [];
 
         distribution.fromFacilityId = $scope.homeFacility.id;
-        distribution.toFacilityId= $scope.facilityToIssue.id;
+        distribution.toFacilityId = $scope.facilityToIssue.id;
+        $scope.facilityToSendToTimr = distribution.toFacilityId;
         distribution.programId=$scope.selectedProgram.id;
         distribution.distributionDate = $scope.facilityToIssue.issueDate;
         distribution.lineItems=[];
