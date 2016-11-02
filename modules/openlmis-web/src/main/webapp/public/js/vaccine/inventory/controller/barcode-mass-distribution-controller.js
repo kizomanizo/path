@@ -287,7 +287,7 @@ function BarcodeMassDistributionController($scope,$location, $document,$window, 
             if(todays_time.getTime() > barcode_date.getTime()){
                 $scope.errorOccurred("Item scanned is expired, expiry date is "+$scope.barcode.formatedDate);
             }else{
-                $scope.current_item = $scope.getItemByGTIN($scope.barcode , $scope.productsInList);
+                $scope.current_item = $scope.getItemByGTIN($scope.barcode , $scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue);
                 if($scope.current_item.gtinInformation === false){
                     $scope.data.error_loading_gtin = true;
                     $scope.data.error_loading_item = false;
@@ -423,90 +423,98 @@ function BarcodeMassDistributionController($scope,$location, $document,$window, 
                         item.product = product;
                         //first check if there is another batch that expires sooner
                         var ExpireSooner = $scope.expireSonner(barcode_object,product.lots);
+                        var progress = true;
                         if(ExpireSooner.available){
                             var confirm_box = confirm("There are "+ExpireSooner.item.quantityOnHand+" Doses of a batch ("+ExpireSooner.item.lotCode+") That expires ("+ExpireSooner.item.expirationDate+") Which is sooner than the selected item, Do you still want to distribute same Item?");
                             if(confirm_box){
-
+                                progress = true
                             }else{
-                                return;
+                                progress = false;
+                                item.available = true;
                             }
                         }else{
-
+                            progress = true
                         }
 
                         //append packaging information
                         product.packaging = packagingInformation;
-
-                        //construct a lot
-                        var lots = angular.copy(product.lots);
-                        angular.forEach(lots,function(productLot){
-                            //if(productLot.lotCode == barcode_object.lot_number && barcode_object.formatedDate == productLot.expirationDate){
-                            if(productLot.lotCode == barcode_object.lot_number){
-                                item.available = true;
-                                //adding products to list of items to be displayed
-                                if($scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue.length == 0) {
-                                    $scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productCategory = "Vaccine";
-                                    $scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue = [];
-                                }
-                                if($scope.checkProductInList($scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue,product.productId)){
-                                    angular.forEach($scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue, function(item){
-                                        if(item.productId == packagingInformation.productid){
+                        if(progress){
+                            //construct a lot
+                            var lots = angular.copy(product.lots);
+                            angular.forEach(lots,function(productLot){
+                                // if(productLot.lotCode == barcode_object.lot_number && barcode_object.formatedDate == productLot.expirationDate){
+                                if(productLot.lotCode == barcode_object.lot_number){
+                                    item.available = true;
+                                    if($scope.checkProductInList($scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue,product.productId)){
+                                        angular.forEach($scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue, function(item){
+                                            // if(item.productId == packagingInformation.productid){
                                             if($scope.checkLOtInList(item.lots,barcode_object.lot_number)){
                                                 angular.forEach(item.lots,function(singleLot){
                                                     if(singleLot.lotCode == barcode_object.lot_number){
                                                         if($scope.data.allowMultipleScan){
-                                                            singleLot.boxes++;
+                                                            if(singleLot.boxes){
+                                                                singleLot.boxes++;
+                                                            }else{
+                                                                singleLot.boxes = 1;
+                                                            }
                                                             $scope.updateCurrentTotal1(item,singleLot);
                                                         }
                                                     }
 
                                                 });
-                                            }else{
-                                                if($scope.data.allowMultipleScan){
-                                                    productLot.boxes = 1;
-                                                    productLot.vials = 0;
-                                                    item.lots.push(productLot);
-                                                    var indexToUse = item.lots.length -1;
-                                                    $scope.updateCurrentTotal1(item,item.lots[indexToUse]);
-                                                }else{
-                                                    productLot.boxes = 0;
-                                                    productLot.vials = 0;
-                                                    item.lots.push(productLot);
-                                                }
-
                                             }
-                                        }
-                                    });
-                                    //if it is a new item completely.
-                                }else{
-                                    var productToPush = angular.copy(product);
-                                    productToPush.lots = [];
-                                    if($scope.data.allowMultipleScan){
-                                        productToPush.boxes = 1;
-                                        productToPush.vials = 0;
-                                        productLot.boxes = 1;
-                                        productLot.vials = 0;
-                                        productToPush.lots.push(productLot);
-                                        $scope.updateCurrentTotal1(productToPush,productLot);
-                                        $scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue.push(productToPush);
-                                    }else{
-                                        productToPush.boxes = 0;
-                                        productToPush.vials = 0;
-                                        productLot.boxes = 0;
-                                        productLot.vials = 0;
-                                        productToPush.lots.push(productLot);
-                                        $scope.facilityToIssue.productsToIssueByCategory[$scope.vaccineIndex].productsToIssue.push(productToPush);
+                                        });
+                                        //if it is a new item completely.
                                     }
-
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 });
             }
         });
         return item;
     };
+
+    $scope.switchBarcode = function (value) {
+        console.log(value)
+        if(value){
+            $timeout(function(){
+                $("#barcode_string").focus();
+            });
+            if($scope.facilityToIssue.productsToIssueByCategory.length !== 0){
+                angular.forEach($scope.facilityToIssue.productsToIssueByCategory,function(lineItem,index){
+                    if(lineItem.productCategory === "Vaccine"){
+                        angular.forEach($scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue,function(item, lineIndex){
+                            angular.forEach($scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].lots, function (lotItem, lotIndex) {
+                                $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].lots[lotIndex].showthis = true;
+
+                            })
+                        });
+                        // $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue = [];
+                        $scope.vaccineIndex = index;
+                    }
+                });
+
+            }
+        }else{
+            if($scope.facilityToIssue.productsToIssueByCategory.length !== 0){
+                angular.forEach($scope.facilityToIssue.productsToIssueByCategory,function(lineItem,index){
+                    if(lineItem.productCategory === "Vaccine"){
+                        angular.forEach($scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue,function(item, lineIndex){
+                            angular.forEach($scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].lots, function (lotItem, lotIndex) {
+                                $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].lots[lotIndex].showthis = false;
+
+                            })
+                        });
+                        // $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue = [];
+                        $scope.vaccineIndex = index;
+                    }
+                });
+
+            }
+        }
+    }
 
     $scope.checkProductInList = function(list,productID){
         var data = false;
@@ -530,13 +538,22 @@ function BarcodeMassDistributionController($scope,$location, $document,$window, 
 
     //get Maximum number of boxes one can have per product based on amount on store
     $scope.getMaximumBoxes = function(product,quantityOnHand){
-        return parseInt(quantityOnHand / (product.packaging.dosespervial * product.packaging.vialsperbox));
+        if(product.packaging) {
+            return parseInt(quantityOnHand / (product.packaging.dosespervial * product.packaging.vialsperbox));
+        }else{
+            return 0;
+        }
     };
     //get Maximum number of lose vials one can have
     $scope.getMaximumLoseVials = function(product,quantityOnHand,boxes){
-        var dosesOnBoxes = boxes*product.packaging.dosespervial * product.packaging.vialsperbox;
-        var remainingDoses = quantityOnHand - dosesOnBoxes;
-        return parseInt(remainingDoses / (product.packaging.dosespervial));
+        if(product.packaging){
+            var dosesOnBoxes = boxes*product.packaging.dosespervial * product.packaging.vialsperbox;
+            var remainingDoses = quantityOnHand - dosesOnBoxes;
+            return parseInt(remainingDoses / (product.packaging.dosespervial));
+        }else{
+            return 0;
+        }
+
     };
     //display the model for issuing
     $scope.useBarcode = true;
@@ -635,24 +652,32 @@ function BarcodeMassDistributionController($scope,$location, $document,$window, 
     ////////////////////////////////////////////////////////////////////////
     ///////////////////End of Barcode codes added by kelvin///////////////////////
     //////////////////////////////////////////////////////////////////////
+    //switch between using barcode and normal
+
     //I have added some codes here to take care of barcode scanning option..
     $scope.showIssueModal=function(facility, type){
-        $scope.hidePDF()
+        $scope.hidePDF();
         if($scope.useBarcode){
             $scope.facilityToIssue=angular.copy(facility);
             $scope.facilityToIssue.type=type;
             var rightNow = new Date();
             $scope.facilityToIssue.displayIssueDate = (rightNow.getMonth() + 1) + '/' + rightNow.getDate() + '/' +  rightNow.getFullYear();
             $scope.facilityToIssue.issueDate = $scope.formatDate(new Date());
-            $scope.issueModal=true;
+
             $timeout(function(){
                 $("#barcode_string").focus();
             });
             if($scope.facilityToIssue.productsToIssueByCategory.length !== 0){
                 angular.forEach($scope.facilityToIssue.productsToIssueByCategory,function(lineItem,index){
                     if(lineItem.productCategory === "Vaccine"){
-                        $scope.productsInList = angular.copy(lineItem.productsToIssue);
-                        $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue = [];
+                        angular.forEach($scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue,function(item, lineIndex){
+                            $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].show_now = true;
+                            angular.forEach($scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].lots, function (lotItem, lotIndex) {
+                                $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].lots[lotIndex].boxes = null;
+                                $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue[lineIndex].lots[lotIndex].vials = null;
+                            })
+                        });
+                        // $scope.facilityToIssue.productsToIssueByCategory[index].productsToIssue = [];
                         $scope.vaccineIndex = index;
                     }
                 });
@@ -660,17 +685,14 @@ function BarcodeMassDistributionController($scope,$location, $document,$window, 
             }else{
                 $scope.productsInList = [];
             }
-            console.log($scope.facilityToIssue.productsToIssueByCategory);
             $scope.colspanTouse = 3;
         }else{
             $scope.facilityToIssue=angular.copy(facility);
             $scope.facilityToIssue.type=type;
-            $scope.issueModal=true;
-            console.log($scope.facilityToIssue.productsToIssueByCategory);
+
             $scope.colspanTouse = 1;
         }
-
-
+        $scope.issueModal=true;
 
     };
 

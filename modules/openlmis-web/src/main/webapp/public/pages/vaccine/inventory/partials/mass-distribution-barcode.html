@@ -144,9 +144,7 @@
                             <th colspan="2">
                                 <span openlmis-message="label.period" class="cell-text"></span>:
                                 <strong id='periodLabel' ng-bind="routineFacility.currentPeriod.name"> </strong>&nbsp;
-                                <label style="float: right; vertical-align: top" title="Switch between using barcode and normal distribution">
-                                    <input style="vertical-align: top;height: 19px;width: 19px; margin:-1px 4px 0 0;cursor:pointer;"  type="checkbox" ng-model="useBarcode"/><strong class="cell-text" style="font-size: 0.8em"> Use Barcode </strong>
-                                </label>
+
                             </th>
                         </tr>
                         <tr>
@@ -398,6 +396,12 @@
                         <span><input style="height: 19px;width: 19px; margin:-1px 4px 0 0;vertical-align:middle;cursor:pointer;" type="checkbox" ng-model="data.allowMultipleScan"> Add Doses  </span>
                         <br><small>** Add Doses checked will add one box in each scan</small>
                     </div>
+                    <div class="span1">
+
+                        <label style="float: right; vertical-align: middle" title="Switch between using barcode and normal distribution">
+                            <input style="vertical-align: top;height: 19px;width: 19px; margin:-1px 4px 0 0;cursor:pointer;"  type="checkbox" ng-model="useBarcode" ng-change="switchBarcode()"/><strong class="cell-text" style="font-size: 0.8em"> Use Barcode </strong>
+                        </label>
+                    </div>
                     <!--<div class="span3">-->
                         <!--<strong id='issueTypeLabel' openlmis-message="label.type"> </strong>:&nbsp;-->
                         <!--<span id='issueType' ng-bind="facilityToIssue.type"></span>-->
@@ -451,7 +455,8 @@
                         </td>
                     </tr>
                     <tr ng-class-odd="'odd'" ng-class-even="'even'" ng-init="$index%2==0?(color='odd'): (color='even')"
-                        ng-repeat-start="product in category.productsToIssue">
+                        ng-repeat-start="product in category.productsToIssue"
+                    >
                         <td class="cell-input disabled last-row"
                             rowspan="{{(product.lots.length===0)?1:product.lots.length}}">
                             <span class="cell-text"  ng-bind="product.name"></span>
@@ -508,7 +513,7 @@
                                    style="max-width: 80px;margin-bottom: 0px"
                             />
                             <!--doses-->
-                        <td class="col-general cell-input" ng-class="{'last-row':product.lots.length==1}"  ng-if="category.productCategory !== 'Vaccine'" colspan="{{ colspanTouse }}">
+                        <td class="col-general cell-input" ng-class="{'last-row':product.lots.length==1}"  ng-if="category.productCategory !== 'Vaccine'" colspan="{{ useBarcode?'3':'1' }}">
                             <input ng-show="product.lots.length > 0"
                                    maximum="{{product.lots[0].quantityOnHand}}"
                                    name="{{product.name}} Batch {{product.lots[0].lotCode}}"
@@ -611,7 +616,7 @@
                                         product.lots[$index +1].quantity >0) || lot.hasExpired"
                             />
                         </td>
-                        <td class="col-general cell-input" ng-class="{'last-row':$last}" ng-if="category.productCategory !== 'Vaccine'" colspan="{{ colspanTouse }}">
+                        <td class="col-general cell-input" ng-class="{'last-row':$last}" ng-if="category.productCategory !== 'Vaccine'" colspan="{{ useBarcode?'3':'1' }}">
                             <input
                                     ng-show="product.lots.length > 0"
                                     maximum="{{lot.quantityOnHand}}"
