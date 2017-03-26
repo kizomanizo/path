@@ -74,6 +74,7 @@ public class StockCardRepository {
       throw new IllegalArgumentException("Already persisted stock card entries can not be saved " +
           "as persisted entry is immutable");
     mapper.insertEntry(entry);
+    entry.setStockCardEntryId(mapper.getLastInsertedStockCardId());
     for (StockCardEntryKV item : entry.getKeyValues()) {
       mapper.insertEntryKeyValue(entry, item.getKeyColumn(), item.getValueColumn());
     }

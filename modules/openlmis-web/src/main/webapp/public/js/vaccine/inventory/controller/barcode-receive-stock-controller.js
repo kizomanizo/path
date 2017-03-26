@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manufacturers,UpdateOrderRequisitionStatus,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockEvent,localStorageService,$location, $anchorScroll,ExistingDistribution) {
+function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manufacturers,UpdateOrderRequisitionStatus,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockCardsReturningIds,localStorageService,$location, $anchorScroll,ExistingDistribution) {
 
     $scope.hasStock=homeFacility.hasStock;
     $scope.userPrograms=configurations.programs;
@@ -548,7 +548,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                     });
                 });
 
-                StockEvent.update({facilityId:homeFacility.id},events, function (data) {
+                StockCardsReturningIds.update({facilityId:homeFacility.id},events, function (data) {
                     if(data.success)
                     {
                         $scope.message=true;
@@ -639,10 +639,15 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
 
                     });
                 });
-
-                StockEvent.update({facilityId:homeFacility.id},events, function (data) {
-                    if(data.success && $scope.hasStock)
+                console.log("updating stock event");
+                StockCardsReturningIds.update({facilityId:homeFacility.id},events, function (data) {
+                    console.log("updated stock event");
+                    console.log(data);
+                    if(data.ids.length>0 && $scope.hasStock)
                     {
+                        console.log("updating stock distribution");
+                        console.log(data.ids[0]);
+//                        console.log(data.ids[1]);
                         SaveDistribution.save(distribution,function(distribution){
 
                         });

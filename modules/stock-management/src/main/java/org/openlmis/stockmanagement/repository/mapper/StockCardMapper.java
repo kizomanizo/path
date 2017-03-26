@@ -167,6 +167,12 @@ public interface StockCardMapper {
   @Options(useGeneratedKeys = true)
   int insertEntry(StockCardEntry entry);
 
+  @Select("SELECT id" +
+          " FROM stock_card_entries " +
+          " order by id DESC " +
+          " LIMIT 1")
+  Integer getLastInsertedStockCardId();
+
   @Insert("INSERT INTO stock_card_entry_key_values (stockcardentryid" +
       ", keycolumn" +
       ", valuecolumn" +

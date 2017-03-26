@@ -34,6 +34,7 @@ public class StockCardEntry extends BaseModel {
 
   private Date occurred;
 
+  private Integer StockCardEntryId=0;
   @JsonIgnore
   private List<StockCardEntryKV> keyValues;
 
@@ -75,4 +76,11 @@ public class StockCardEntry extends BaseModel {
     keyValues.add(new StockCardEntryKV(newKey, value, new Date()));
   }
 
+  public Integer getStockCardEntryId() {
+    return StockCardEntryId;
+  }
+
+  public void setStockCardEntryId(Integer stockCardEntryId) {
+    StockCardEntryId = stockCardEntryId;
+  }
 }
