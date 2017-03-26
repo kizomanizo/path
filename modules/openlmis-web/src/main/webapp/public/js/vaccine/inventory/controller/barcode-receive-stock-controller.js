@@ -496,6 +496,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
     {
         var callBack=function(result)
         {
+            console.alert("zulu1");
             if(result)
             {
                 var events=[];
@@ -589,7 +590,8 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                     var existingDistribution=(data.distribution !==null)?data.distribution:undefined;
                     var supervisorId=(data.supervisorId !== null)?data.supervisorId:undefined;
                     distribution=new VaccineDistribution(existingDistribution, $scope.receivedProducts,$scope.orderNumber,$scope.orderDate,supervisorId,$scope.homeFacilityId,$scope.selectedProgramId);
-                    console.log(JSON.stringify(distribution));
+//                    console.log(JSON.stringify(distribution));
+                    console.log("stock received without barcode");
                 });
 
                 var events=[];
@@ -880,7 +882,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
         Lot.create(newLot,function(data){
             $scope.newLotModal=false;
             $scope.lotToAdd.lotId=data.lot.id;
-            console.log(JSON.stringify($scope.selectedLot));
+            console.log("6"+JSON.stringify($scope.selectedLot));
             $scope.loadProductLots(data.lot.product);
         });
     };

@@ -222,9 +222,9 @@ function BarcodeMassDistributionController($scope,$location, $document,$window, 
         $scope.loadDistributionsByDate($scope.toDay);
     }
 
-    ////////////////////////////////////////////////////////////////////////
-    ///////////////////Barcode codes added by kelvin///////////////////////
-    //////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////
+    /////////////////// Barcode codes added by kelvin ///////////////////////
+    /////////////////////////////////////////////////////////////////////////
     //pull all gtin information
     $http.get('/vaccine/gitn_lookup/all').success(function(data) {
         $scope.gtin_lookups = data.gitn_lookup;
@@ -306,6 +306,7 @@ function BarcodeMassDistributionController($scope,$location, $document,$window, 
                         $scope.errorOccurred("You do not have this Item in your stock");
 
                     }else{
+
                         $scope.data.error_loading_item = false;
                         $scope.data.loading_item = false;
                         $scope.data.show_singleItem = true;

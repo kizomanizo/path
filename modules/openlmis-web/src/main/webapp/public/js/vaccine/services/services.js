@@ -116,6 +116,10 @@ services.factory('StockCards', function($resource){
    return $resource('/api/v2/facilities/:facilityId/stockCards?includeEmptyLots=false', {facilityId: '@facilityId'}, {});
 });
 
+//services.factory('BardoceActivity', function($resource){
+//   return $resource('/api/v2/facilities/:facilityId/stockCards?includeEmptyLots=false', {facilityId: '@facilityId'}, {});
+//});
+
 services.factory('Forecast', function($resource){
     return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements',{facilityId: '@facilityId', programId: '@programId'},{});
 });
