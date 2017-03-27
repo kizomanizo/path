@@ -10,7 +10,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manufacturers,UpdateOrderRequisitionStatus,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockCardsReturningIds,localStorageService,$location, $anchorScroll,ExistingDistribution) {
+function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manufacturers,UpdateOrderRequisitionStatus,$timeout,$window,$dialog,configurations,homeFacility,SaveDistribution,VaccineProgramProducts,FacilityTypeAndProgramProducts,Distribution,DistributionWithSupervisorId, ProductLots,StockCardsReturningIds,BarcodeActivity,localStorageService,$location, $anchorScroll,ExistingDistribution) {
 
     $scope.hasStock=homeFacility.hasStock;
     $scope.userPrograms=configurations.programs;
@@ -590,8 +590,7 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                     var existingDistribution=(data.distribution !==null)?data.distribution:undefined;
                     var supervisorId=(data.supervisorId !== null)?data.supervisorId:undefined;
                     distribution=new VaccineDistribution(existingDistribution, $scope.receivedProducts,$scope.orderNumber,$scope.orderDate,supervisorId,$scope.homeFacilityId,$scope.selectedProgramId);
-//                    console.log(JSON.stringify(distribution));
-                    console.log("stock received without barcode");
+                    console.log(JSON.stringify(distribution));
                 });
 
                 var events=[];
@@ -647,9 +646,8 @@ function BarcodeReceiveStockController($scope,$filter,$http, Lot,StockCards,manu
                     {
                         console.log("updating stock distribution");
                         console.log(data.ids[0]);
-//                        console.log(data.ids[1]);
                         SaveDistribution.save(distribution,function(distribution){
-
+                            BarcodeActivity.save(data.ids,function(data){});
                         });
                     }
                     $scope.message=true;

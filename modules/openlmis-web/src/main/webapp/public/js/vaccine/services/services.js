@@ -124,9 +124,9 @@ services.factory('StockCardsReturningIds', function($resource){
    return $resource('/api/v2/facilities/:facilityId/stockCardsReturningIds?includeEmptyLots=false', {facilityId: '@facilityId'}, {update:{method:'POST'}});
 });
 
-//services.factory('BardoceActivity', function($resource){
-//   return $resource('/api/v2/facilities/:facilityId/stockCards?includeEmptyLots=false', {facilityId: '@facilityId'}, {});
-//});
+services.factory('BarcodeActivity', function($resource){
+   return $resource('/api/v2/facilities/:facilityId/stockCardsReturningIds?includeEmptyLots=false', {}, {save:{method:'POST'}});
+});
 
 services.factory('Forecast', function($resource){
     return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements',{facilityId: '@facilityId', programId: '@programId'},{});
