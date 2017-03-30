@@ -125,7 +125,7 @@ services.factory('StockCardsReturningIds', function($resource){
 });
 
 services.factory('BarcodeActivity', function($resource){
-   return $resource('/api/v2/facilities/:facilityId/stockCardsReturningIds?includeEmptyLots=false', {}, {save:{method:'POST'}});
+   return $resource('/api/barcode/barcodeActivities', {}, {save:{method:'POST'}});
 });
 
 services.factory('Forecast', function($resource){
