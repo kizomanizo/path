@@ -1073,7 +1073,14 @@ services.factory('PriceScheduleCategories', function ($resource) {
 services.factory('CCERepairManagement', function ($resource) {
     return $resource('/reports/reportdata/cceRepairManagement.json', {}, {});
 });
+///////////////////////////////////////////////////////////////////////////////
+//////////////////codes added by Martha Shaka 31/03/2017 //////////////////////
+///////////////////////////////////////////////////////////////////////////////
+services.factory('BarcodeActivity', function ($resource) {
+    return $resource('/reports/reportdata/cceRepairManagement.json', {}, {});
+});
 
+//////////////////////////end of codes added by Martha shaka///////////////////////////////////////////
 services.factory('CCERepairManagementEquipmentList', function ($resource) {
     return $resource('/reports/reportdata/cceRepairManagementEquipmentList.json', {}, {});
 });
