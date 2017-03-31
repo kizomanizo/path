@@ -45,7 +45,7 @@ function RepairManagementController($scope,ngTableParams,messageService,CCERepai
          ];
 
      $scope.loadPieChart = function(row){
-
+sudo
          $scope.resetRepairManagementData();
          $scope.RepairManagementPieChartData = [];
          $scope.RepairManagementNotFunctionalPieChartData=[];

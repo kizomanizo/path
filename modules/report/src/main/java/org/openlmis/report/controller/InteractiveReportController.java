@@ -649,7 +649,6 @@ public class InteractiveReportController extends BaseController {
     public Pages getStockLedgerReport(@RequestParam(value = "page", required = false, defaultValue = "1") int page,
                                       @RequestParam(value = "max", required = false, defaultValue = "10") int max,
                                       HttpServletRequest request
-
     ) {
         Report report = reportManager.getReportByKey("stock_ledger");
         report.getReportDataProvider().setUserId(loggedInUserId(request));
