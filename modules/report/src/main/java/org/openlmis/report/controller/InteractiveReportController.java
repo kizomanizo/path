@@ -514,6 +514,22 @@ public class InteractiveReportController extends BaseController {
                 (List<TimelinessReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
         return new Pages(page, max, timelinessReportList);
     }
+    //////////////////////codes added by Martha Shaka //////////////////////////
+    @RequestMapping(value = "/reportdata/barcode_activity_report", method = GET, headers = BaseController.ACCEPT_JSON)
+    public Pages SelectBarcodeActivityByGeographicalSql(
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "max", required = false, defaultValue = "10") int max,
+            HttpServletRequest request
+    ) {
+
+        Report report = reportManager.getReportByKey("barcode_activity_report");
+        report.getReportDataProvider().setUserId(loggedInUserId(request));
+        List<BarcodeActivityReport> x = (List<BarcodeActivityReport>) report.getReportDataProvider().getReportBody(request.getParameterMap(), request.getParameterMap(), page, max);
+
+        return new Pages(page, max, x);
+    }
+
+    ///////////////////////////////////end of added codes/////////////////////////
     @RequestMapping(value = "/reportdata/cceRepairManagement", method = GET, headers = BaseController.ACCEPT_JSON)
     public Pages getRepairManagementSummary(
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,

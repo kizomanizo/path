@@ -32,7 +32,7 @@
 <div class="row-fluid sortable ui-sortable">
     <div class="box span12">
         <div class="box-header">
-            <h2 openlmis-message="report.title.repair.management">
+            <h2 openlmis-message="report.title.repair.management"> changed
                 <i class="icon-edit"></i>
                 <span class="break"></span></h2>
             <div class="box-icon">
@@ -79,16 +79,12 @@
                         <tbody>
                         <tr  ng-repeat="row in datarows" ng-click="loadPieChart(row)" style="cursor:pointer">
                             <td  data-title="'#'" class="number" style="width:20px" >{{ row.no }}</td>
-                            <td  data-title="getLocalMessage('label.repair.management.facilityname')" style="max-width:80px" sortable="facility_name" ng-show="!aggregate" >{{ row.facility_name}}</td>
-                            <td data-title="getLocalMessage('label.repair.management.facilitytype')" style="max-width:80px" sortable="facility_type" ng-show="!aggregate" >{{ row.facility_type}}</td>
+                            <td  data-title="getLocalMessage('label.repair.management.facilityname')" style="max-width:80px" sortable="facility_name" ng-show="!aggregate" >{{ row.name}}</td>
+                            <td data-title="getLocalMessage('label.repair.management.facilitytype')" style="max-width:80px" sortable="facility_type" ng-show="!aggregate" >{{ row.type_name}}</td>
                             <td data-title="getLocalMessage('label.repair.management.facilitytype')" style="max-width:80px" sortable="facility_type" ng-show="aggregate" ><span openlmis-message="label.facility.type.all"></span> {{aggregateType }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.functional')" style="max-width:80px" sortable="functional" >{{ row.functional}}</td>
-                            <td data-title="getLocalMessage('label.repair.management.notfunctional')" style="max-width:100px" sortable="not_functional" >{{ row.not_functional }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.functionalnotinstalled')" style="max-width:150px" sortable="functional_not_installed" >{{ row.functional_not_installed }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.electricity')" style="max-width:80px" sortable="electricity"  >{{ row.electricity }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.solar')" style="max-width:100px" sortable="solar"  >{{ row.solar }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.gas')" style="max-width:100px" sortable="gas"  >{{ row.gas }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.kerosene')" style="max-width:100px" sortable="kerosene"  >{{ row.kerosene }}</td>
+                            <td data-title="getLocalMessage('label.repair.management.functional')" style="max-width:80px" sortable="functional" >{{ row.credit}}</td>
+                            <td data-title="getLocalMessage('label.repair.management.notfunctional')" style="max-width:100px" sortable="not_functional" >{{ row.debit }}</td>
+                            <td data-title="getLocalMessage('label.repair.management.functionalnotinstalled')" style="max-width:150px" sortable="functional_not_installed" >{{ row.adjustment }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -138,10 +134,6 @@
                             <td data-title="getLocalMessage('label.facility.name')" style="max-width:80px" sortable="facility_name"  >{{ row.facility_name }}</td>
                             <td data-title="getLocalMessage('label.facility.type')" style="max-width:80px" sortable="facility_type" >{{ row.facility_type}}</td>
                             <td data-title="getLocalMessage('label.equipment.manufacturer')" style="max-width:100px" sortable="manufacturer" >{{ row.manufacturer }}</td>
-                            <td data-title="getLocalMessage('label.equipment.model')" style="max-width:150px" sortable="model" >{{ row.model }}</td>
-                            <td data-title="getLocalMessage('label.equipment.capacity')" style="max-width:150px" sortable="capacity" >{{ row.capacity }}</td>
-                            <td data-title="getLocalMessage('label.equipment.working.status')" style="max-width:80px" sortable="working_status"  >{{ row.working_status }}</td>
-                            <td data-title="getLocalMessage('label.equipment.breakdown')" style="max-width:100px" sortable="break_down"  >{{ row.break_down }}</td>
                         </tr>
                         </tbody>
                     </table>

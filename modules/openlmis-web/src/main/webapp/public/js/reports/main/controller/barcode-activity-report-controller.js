@@ -8,7 +8,7 @@
 * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
 */
 
-function BarcodeActivityReportController($scope,ngTableParams,messageService,BarcodeActivity,$location){
+function BarcodeActivityReportController($scope,ngTableParams,messageService,BarcodeActivityManagement,$location){
 
 
     $scope.equipmentDialogModal=false;
@@ -24,7 +24,7 @@ function BarcodeActivityReportController($scope,ngTableParams,messageService,Bar
           $scope.resetRepairManagementData();
           $scope.filter.max = 10000;
           $scope.data = $scope.datarows = [];
-          BarcodeActivity.get($scope.filter, function(data) {
+          BarcodeActivityManagement.get($scope.filter, function(data) {
           if (data.pages !== undefined && data.pages.rows !== undefined && data.pages.rows[0]!==null) {
                      $scope.data =$scope.datarows= data.pages.rows;
                      $scope.paramsChanged($scope.tableParams);
@@ -63,7 +63,7 @@ function BarcodeActivityReportController($scope,ngTableParams,messageService,Bar
     $scope.exportReport   = function (type){
         $scope.filter.pdformat = 1;
                   var params = jQuery.param($scope.filter);
-                  var url = '/reports/download/cce_repair_management/' + type +'?' + params;
+                  var url = '/reports/download/barcode_activity_report/' + type +'?' + params;
                   window.open(url);
      };
 

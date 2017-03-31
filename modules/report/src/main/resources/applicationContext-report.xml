@@ -459,6 +459,18 @@
                     <property name="title" value="report.title.stock.status"/>
                     <property name="version" value="1.0"/>
                 </bean>
+
+                <!--////////////////////////////////code added by Martha Shaka  31/03/2017///////////////////////////////////-->
+                <bean class="org.openlmis.report.Report">
+                    <property name="reportKey" value="barcode_activity_report"/>
+                    <property name="template" value="stock-ledger-report.jasper"/>
+                    <property name="reportDataProvider" ref="barcodeDataProvider"/>
+                    <property name="id" value="RP-replacement-plan"/>
+                    <property name="name" value="Barcode Activity"/>
+                    <property name="title" value="report.title.stock.ledger.report"/>
+                    <property name="version" value="1.0"/>
+                </bean>
+                <!--///////////////////////////////////end of code added by Martha Shaka ////////////////////////////////////-->
             </list>
         </constructor-arg>
     </bean>

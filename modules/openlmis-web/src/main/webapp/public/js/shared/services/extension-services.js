@@ -1076,8 +1076,8 @@ services.factory('CCERepairManagement', function ($resource) {
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////codes added by Martha Shaka 31/03/2017 //////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-services.factory('BarcodeActivity', function ($resource) {
-    return $resource('/reports/reportdata/cceRepairManagement.json', {}, {});
+services.factory('BarcodeActivityManagement', function ($resource) {
+    return $resource('/reports/reportdata/barcode_activity_report.json', {}, {});
 });
 
 //////////////////////////end of codes added by Martha shaka///////////////////////////////////////////
