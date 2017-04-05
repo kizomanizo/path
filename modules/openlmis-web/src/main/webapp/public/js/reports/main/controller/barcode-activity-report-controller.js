@@ -23,6 +23,8 @@ function BarcodeActivityReportController($scope,ngTableParams,messageService,Bar
     $scope.OnFilterChanged = function(){
           $scope.resetRepairManagementData();
           $scope.filter.max = 10000;
+//          $scope.filter.startDate = $filter('date')($scope.filter.startTime, "yyyy-MM-dd");
+//          $scope.filter.endDate = $filter('date')($scope.filter.endTime, "yyyy-MM-dd");
           $scope.data = $scope.datarows = [];
           BarcodeActivityManagement.get($scope.filter, function(data) {
           if (data.pages !== undefined && data.pages.rows !== undefined && data.pages.rows[0]!==null) {

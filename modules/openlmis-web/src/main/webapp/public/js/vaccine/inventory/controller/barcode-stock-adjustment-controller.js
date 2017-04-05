@@ -7,7 +7,7 @@
 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
-function BarcodeStockAdjustmentController($scope, $timeout,$window,$routeParams,$dialog,$log,$http,StockCardsByCategory,configurations,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
+function BarcodeStockAdjustmentController($scope, $timeout,$window,$routeParams,$dialog,$log,$http,StockCardsByCategory,configurations,StockCardsReturningIds,BarcodeActivity,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
 
     //Get Home Facility
     $scope.currentStockLot = undefined;
@@ -545,9 +545,10 @@ function BarcodeStockAdjustmentController($scope, $timeout,$window,$routeParams,
                         }
                     });
                 });
-                StockEvent.save({facilityId:homeFacility.id},events, function (data) {
+                StockCardsReturningIds.update({facilityId:homeFacility.id},events, function (data) {
                     if(data.success !==null)
                     {
+                        BarcodeActivity.save(data.ids,function(data){});
                         $scope.message=data.success;
                         $timeout(function(){
                             $window.location='/public/pages/vaccine/dashboard/index.html#/dashboard';

@@ -56,6 +56,31 @@
                                 </select>
                             </div>
                         </div>
+<div class="horizontalFilters form-cell">
+                        <label for="start" class="labels"><span openlmis-message="label.start.date"></span></label>
+
+                        <div>
+                            <input id="start"
+                                   ng-model="periodStartDate"
+                                   ui-date-format="yy-mm-dd"
+                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                                   ng-change="OnFilterChanged()"
+                                    />
+                        </div>
+                    </div>
+
+                    <div class="horizontalFilters form-cell">
+                        <label for="end" class="labels"><span openlmis-message="label.end.date"></span></label>
+
+                        <div>
+                            <input id="end"
+                                   ng-model="periodEndDate"
+                                   ui-date-format="yy-mm-dd"
+                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
+                                   ng-change="OnFilterChanged()"
+                                    />
+                        </div>
+                    </div>
                     </div>
                 </form>
             </div>
