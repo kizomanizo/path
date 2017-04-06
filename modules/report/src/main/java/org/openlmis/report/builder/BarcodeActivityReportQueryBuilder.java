@@ -61,9 +61,9 @@ public class BarcodeActivityReportQueryBuilder {
                     "\t         inner join facilities on stock_cards.facilityid = facilities.id\n" +
                     "\t         inner join facility_types on facilities.typeid = facility_types.id\n" +
                     "\t         inner join geographic_zones on facilities.geographiczoneid = geographic_zones.id\n" +facilityFilter+")\n" +
-                    "             AS T1 group by T1.id,T1.type $$)\n" +
+                    "             AS T1 group by T1.id,T1.type order by T1.id,T1.type $$)\n" +
                     "\n" +
-                    "AS final_result(Id integer, credit bigint, debit bigint, adjustment bigint) \n" +
+                    "AS final_result(Id integer, adjustment bigint, credit bigint, debit bigint) \n" +
                     "\n" +
                     ") AS T2\n" +
                     "inner join facilities on T2.Id = facilities.id\n" +

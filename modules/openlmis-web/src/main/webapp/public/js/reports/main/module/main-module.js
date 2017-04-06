@@ -43,9 +43,7 @@ angular.module('mainReport', ['openlmis', 'ngTable', 'angularCombine', 'ui.boots
         when('/stocked-out', {controller: StockedOutController, templateUrl:'partials/stocked-out.html',reloadOnSearch:false}).
         when('/timeliness', {controller: TimelinessReportController, templateUrl:'partials/timeliness.html',reloadOnSearch:false}).
         when('/user-summary', {controller: UserSummaryReportController, templateUrl:'partials/user-summary.html',reloadOnSearch:false}).
-        when('/barcode-activity', {controller: VaccineStockStatusReportController, templateUrl:'partials/vaccine-stock-status.html',reloadOnSearch:false}).
-        when('/barcode-activity-report', {controller: VaccineStockStatusReportController, templateUrl:'partials/barcode-activity.html',reloadOnSearch:false}).
-        when('/barcode-activity-report-trial', {controller: BarcodeActivityReportController, templateUrl:'partials/barcode-activity.html',reloadOnSearch:false}).
+        when('/barcode-activity-report', {controller: BarcodeActivityReportController, templateUrl:'partials/barcode-activity.html',reloadOnSearch:false}).
         when('/stock-ledger-report', {controller: VaccineStockLedgerReportController, templateUrl:'partials/stock-ledger.html',reloadOnSearch:false}).
         when('/cold-chain-temperature', {controller: ColdChainTemperatureController, templateUrl:'partials/cold-chain-temperature.html',reloadOnSearch:false}).
         when('/distribution-completeness', {controller: VaccineDistributionCompletenessReportController, templateUrl:'partials/vaccine-distribution-completeness-report.html',reloadOnSearch:false}).

@@ -32,7 +32,7 @@
 <div class="row-fluid sortable ui-sortable">
     <div class="box span12">
         <div class="box-header">
-            <h2 openlmis-message="report.title.repair.management"> changed
+            <h2 openlmis-message="report.title.barcode.activity">
                 <i class="icon-edit"></i>
                 <span class="break"></span></h2>
             <div class="box-icon">
@@ -56,7 +56,7 @@
                                 </select>
                             </div>
                         </div>
-<div class="horizontalFilters form-cell">
+                        <div class="horizontalFilters form-cell">
                         <label for="start" class="labels"><span openlmis-message="label.start.date"></span></label>
 
                         <div>
@@ -69,7 +69,7 @@
                         </div>
                     </div>
 
-                    <div class="horizontalFilters form-cell">
+                        <div class="horizontalFilters form-cell">
                         <label for="end" class="labels"><span openlmis-message="label.end.date"></span></label>
 
                         <div>
@@ -107,9 +107,9 @@
                             <td  data-title="getLocalMessage('label.repair.management.facilityname')" style="max-width:80px" sortable="facility_name" ng-show="!aggregate" >{{ row.name}}</td>
                             <td data-title="getLocalMessage('label.repair.management.facilitytype')" style="max-width:80px" sortable="facility_type" ng-show="!aggregate" >{{ row.type_name}}</td>
                             <td data-title="getLocalMessage('label.repair.management.facilitytype')" style="max-width:80px" sortable="facility_type" ng-show="aggregate" ><span openlmis-message="label.facility.type.all"></span> {{aggregateType }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.functional')" style="max-width:80px" sortable="functional" >{{ row.credit}}</td>
-                            <td data-title="getLocalMessage('label.repair.management.notfunctional')" style="max-width:100px" sortable="not_functional" >{{ row.debit }}</td>
-                            <td data-title="getLocalMessage('label.repair.management.functionalnotinstalled')" style="max-width:150px" sortable="functional_not_installed" >{{ row.adjustment }}</td>
+                            <td data-title="getLocalMessage('label.barcode.report.adjustment')" style="max-width:80px" sortable="functional" >{{ row.adjustment}}</td>
+                            <td data-title="getLocalMessage('label.barcode.report.credit')" style="max-width:100px" sortable="not_functional" >{{ row.credit }}</td>
+                            <td data-title="getLocalMessage('label.barcode.report.debit')" style="max-width:150px" sortable="functional_not_installed" >{{ row.debit }}</td>
                         </tr>
                         </tbody>
                     </table>
