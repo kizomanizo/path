@@ -32,5 +32,7 @@ public class BarcodeActivityReportParam
   private String facilityLevel;
   private String facilityIds;
   private String productId;
+  private String startDate;
+  private String endDate;
 
 }

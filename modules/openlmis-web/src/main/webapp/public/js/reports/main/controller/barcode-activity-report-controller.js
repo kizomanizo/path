@@ -7,8 +7,11 @@
 *
 * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
 */
-
-function BarcodeActivityReportController($scope,ngTableParams,messageService,BarcodeActivityManagement,$location){
+/**
+*created by Martha shaka
+*3/30/2017
+*/
+function BarcodeActivityReportController($scope,$filter,$window,ngTableParams,messageService,BarcodeActivityManagement,$location){
 
 
     $scope.equipmentDialogModal=false;
@@ -22,15 +25,16 @@ function BarcodeActivityReportController($scope,ngTableParams,messageService,Bar
 
     $scope.OnFilterChanged = function(){
           $scope.resetRepairManagementData();
-          $scope.filter.max = 10000;
-//          $scope.filter.startDate = $filter('date')($scope.filter.startTime, "yyyy-MM-dd");
-//          $scope.filter.endDate = $filter('date')($scope.filter.endTime, "yyyy-MM-dd");
-          $scope.data = $scope.datarows = [];
-          BarcodeActivityManagement.get($scope.filter, function(data) {
-          if (data.pages !== undefined && data.pages.rows !== undefined && data.pages.rows[0]!==null) {
-                     $scope.data =$scope.datarows= data.pages.rows;
-                     $scope.paramsChanged($scope.tableParams);
-            }
+         //          clear old data if there was any
+                   $scope.data = $scope.datarows = [];
+                   $scope.filter.max = 10000;
+                   $scope.filter.startDate = $filter('date')($scope.filter.startTime, "yyyy-MM-dd");
+                   $scope.filter.endDate = $filter('date')($scope.filter.endTime, "yyyy-MM-dd");
+                   BarcodeActivityManagement.get($scope.getSanitizedParameter(),function(data) {
+                   if (data.pages !== undefined && data.pages.rows !== undefined && data.pages.rows[0]!==null) {
+                              $scope.data =$scope.datarows= data.pages.rows;
+                              $scope.paramsChanged($scope.tableParams);
+                     }
 
           if($scope.filter.aggregate ==='TRUE'){ $scope.aggregate=true;}
           else{ $scope.aggregate=false;}

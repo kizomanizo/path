@@ -26,6 +26,8 @@ import java.util.Objects;
 
 
 /**
+ * created by Martha Shaka
+ * 3/30/2017
  * Exposes the services for handling barcode scanning activities.
  */
 

@@ -127,7 +127,7 @@ services.factory('StockCardsReturningIds', function($resource){
 services.factory('BarcodeActivity', function($resource){
    return $resource('/api/barcode/barcodeActivities', {}, {save:{method:'POST'}});
 });
-
+///////////////////////end of code/////////////////////////////////////////////////////////////////
 services.factory('Forecast', function($resource){
     return $resource('/rest-api/facility/:facilityId/program/:programId/stockRequirements',{facilityId: '@facilityId', programId: '@programId'},{});
 });

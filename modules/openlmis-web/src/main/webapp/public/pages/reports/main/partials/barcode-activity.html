@@ -56,31 +56,40 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="horizontalFilters form-cell">
-                        <label for="start" class="labels"><span openlmis-message="label.start.date"></span></label>
+                        <div class="form-cell horizontalFilters">
+                            <label for="startTime" class="labels">
+                                <span>Start Date</span>
+                                <span class="label-required"> *&nbsp;</span>
 
-                        <div>
-                            <input id="start"
-                                   ng-model="periodStartDate"
-                                   ui-date-format="yy-mm-dd"
-                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
-                                   ng-change="OnFilterChanged()"
-                                    />
+                            </label>
+
+                            <div class="form-field">
+                                <input name="startTime" id="startTime" type="text"
+                                       ui-date="{maxDate:'today', dateFormat: 'dd/mm/yy', changeYear: false}"
+                                       ui-date-format
+                                       ng-model="filter.startTime"
+                                       ng-change="OnFilterChanged()"/>
+
+                            </div>
                         </div>
-                    </div>
 
-                        <div class="horizontalFilters form-cell">
-                        <label for="end" class="labels"><span openlmis-message="label.end.date"></span></label>
 
-                        <div>
-                            <input id="end"
-                                   ng-model="periodEndDate"
-                                   ui-date-format="yy-mm-dd"
-                                   ui-date="{dateFormat: 'dd/mm/yy', changeYear: true}"
-                                   ng-change="OnFilterChanged()"
-                                    />
+                        <div class="form-cell horizontalFilters">
+                            <label for="endTime" class="labels">
+                                <span>End Date</span>
+                                <span class="label-required"> *&nbsp;</span>
+                            </label>
+
+                            <div class="form-field">
+                                <input name="endTime" id="endTime" type="text"
+                                       ui-date="{maxDate:'today', dateFormat: 'dd/mm/yy', changeYear: true}"
+                                       ui-date-format
+                                       ng-model="filter.endTime"
+                                       ng-change="OnFilterChanged()"
+                                       ng-disabled="!filter.startTime"/>
+
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </form>
             </div>

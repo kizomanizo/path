@@ -58,7 +58,11 @@ public class BarcodeActivityReportDataProvider extends ReportDataProvider {
       Long programId = StringHelper.isBlank(filterCriteria, "program") ? 0L : Long.parseLong(filterCriteria.get("program")[0]);
       barcodeActivityReportParam.setProgramId(programId);
       barcodeActivityReportParam.setFacilityLevel(filterCriteria.get("facilityLevel")[0]);
+      String startDate = StringHelper.isBlank(filterCriteria, "startDate") ? null : ((String[]) filterCriteria.get("startDate"))[0];
+      barcodeActivityReportParam.setStartDate(startDate);
 
+      String endDate = StringHelper.isBlank(filterCriteria, "endDate") ? null : ((String[]) filterCriteria.get("endDate"))[0];
+      barcodeActivityReportParam.setEndDate(endDate);
       // List of facilities includes supervised and home facility
       List<Facility> facilities = facilityService.getUserSupervisedFacilities(this.getUserId(), programId, MANAGE_EQUIPMENT_INVENTORY);
       facilities.add(facilityService.getHomeFacility(this.getUserId()));

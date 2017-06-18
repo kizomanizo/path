@@ -31,9 +31,9 @@ public class BarcodeActivityReportQueryBuilder {
         String facilityFilter=null;
         BEGIN();
         String aggregateOpen = "SELECT  "+
-                "SUM(agg.credit) AS credit " +
+                "SUM(agg.adjustment) AS adjustment " +
+                ",SUM(agg.credit) AS credit " +
                 ",SUM(agg.debit) AS debit " +
-                ",SUM(agg.adjustment) AS adjustment " +
                 "FROM(";
 
 
@@ -52,6 +52,12 @@ public class BarcodeActivityReportQueryBuilder {
 
             } else {
                  facilityFilter = " WHERE facilities.id IN("+filter.getFacilityIds()+")";
+            }
+            if(!filter.getStartDate().isEmpty()){
+                facilityFilter =  facilityFilter +" AND  barcode_activity.createddate >= '"+filter.getStartDate()+"'";
+            }
+            if(!filter.getEndDate().isEmpty()){
+                facilityFilter =  facilityFilter + " AND barcode_activity.createddate <='"+filter.getEndDate()+"'";
             }
             String barcodeActivity = "select T2.Id, T2.credit, T2.debit, T2.adjustment, facilities.name, facility_types.name AS type_name from (\n" +
                     "select * from crosstab($$ select id,type,count(type) from \n" +

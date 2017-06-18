@@ -24,7 +24,6 @@ function UserSummaryReportController($scope, $window, ReportAllProgramsBySupervi
         //$scope.filter.max = 10000;
         UserRoleAssignmentsSummary.get($scope.filterObject, function (data) {
             $scope.total = 0;
-
             $scope.UserRolePieChartData = [];
             if (!isUndefined(data.userRoleAssignmentSummary)) {
 

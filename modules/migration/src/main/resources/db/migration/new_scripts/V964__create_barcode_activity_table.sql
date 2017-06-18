@@ -3,7 +3,6 @@ CREATE TABLE barcode_activity
 (
   id serial PRIMARY KEY,
   activitydetailsid integer,
-  activity character varying(50) NOT NULL,
   createdby integer,
   createddate timestamp with time zone DEFAULT now(),
   modifiedby integer,

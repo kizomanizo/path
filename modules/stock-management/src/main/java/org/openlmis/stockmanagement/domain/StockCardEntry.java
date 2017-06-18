@@ -75,7 +75,7 @@ public class StockCardEntry extends BaseModel {
     String newKey = key.trim().toLowerCase();
     keyValues.add(new StockCardEntryKV(newKey, value, new Date()));
   }
-
+//////////////////////code added by Martha Shaka //////////////////////////
   public Integer getStockCardEntryId() {
     return StockCardEntryId;
   }
@@ -83,4 +83,5 @@ public class StockCardEntry extends BaseModel {
   public void setStockCardEntryId(Integer stockCardEntryId) {
     StockCardEntryId = stockCardEntryId;
   }
+ ///////////////////////////end of code added by Martha Shaka ////////////////
 }

@@ -166,13 +166,13 @@ public interface StockCardMapper {
       ", #{referenceNumber})")
   @Options(useGeneratedKeys = true)
   int insertEntry(StockCardEntry entry);
-
+//////////////////////////////////code added by Martha Shaka /////////////////////////////////////////
   @Select("SELECT id" +
           " FROM stock_card_entries " +
           " order by id DESC " +
           " LIMIT 1")
   Integer getLastInsertedStockCardId();
-
+///////////////////////////////////////end of added codes////////////////////////////////////////////
   @Insert("INSERT INTO stock_card_entry_key_values (stockcardentryid" +
       ", keycolumn" +
       ", valuecolumn" +
