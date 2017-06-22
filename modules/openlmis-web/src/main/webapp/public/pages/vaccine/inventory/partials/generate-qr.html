@@ -1,0 +1,17 @@
+<div class="rnr-table" ng-form="adjustmentForm" ng-show="stockCardsToDisplay.length >0">
+    <meta charset="utf-8">
+    <title>Angular QR Code</title>
+    <div class="body">
+        <p>
+            <qrcode text="qrcodeString" type-number="typeNumber" correction-level="correctionLevel" size="size" input-mode="inputMode" image="image"></qrcode>
+        </p>
+        <p>
+            <label for="text">Text:</label>
+        </p>
+        <p>
+            <textarea type="text" id="text" class="textarea" ng-model="qrcodeString" placeholder="YOUR TEXT TO ENCODE"></textarea>
+        </p>
+
+    </div>
+
+</div>
