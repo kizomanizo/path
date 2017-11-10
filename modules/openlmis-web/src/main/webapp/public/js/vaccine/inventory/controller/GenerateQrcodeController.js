@@ -7,8 +7,8 @@
 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
-function GenerateQrcodeController($scope, $timeout,$window,$routeParams,$dialog,StockCardsByCategory,configurations,StockEvent,localStorageService,homeFacility,VaccineAdjustmentReasons,UserFacilityList) {
-      $scope.qrcodeString = 'YOUR TEXT TO ENCODE';
+function GenerateQrcodeController($scope) {
+      $scope.qrcodeString = "(01)"+$scope.gtinString+"(17)"+$scope.expiryDateString+"(10)"+$scope.lotNoString;
       $scope.size = 250;
       $scope.correctionLevel = '';
       $scope.typeNumber = 0;

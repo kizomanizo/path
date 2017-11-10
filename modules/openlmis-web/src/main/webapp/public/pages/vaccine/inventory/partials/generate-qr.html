@@ -1,17 +1,31 @@
-<div class="rnr-table" ng-form="adjustmentForm" ng-show="stockCardsToDisplay.length >0">
+<div class="rnr-table" ng-form="adjustmentForm">
     <meta charset="utf-8">
     <title>Angular QR Code</title>
     <div class="body">
         <p>
-            <qrcode text="qrcodeString" type-number="typeNumber" correction-level="correctionLevel" size="size" input-mode="inputMode" image="image"></qrcode>
+            <qr text="qrcodeString" type-number="typeNumber" correction-level="correctionLevel" size="size" input-mode="inputMode" image="image"></qr>
         </p>
         <p>
-            <label for="text">Text:</label>
+            <label for="gtin">GTIN:</label>
+        </p>
+         <p>
+            <textarea type="text" id="gtin" class="textarea" ng-model="gtinString" placeholder="Enter the GTIN"></textarea>
+         </p>
+        <p>
+            <label for="expiry_date">EXPIRY DATE:</label>
         </p>
         <p>
-            <textarea type="text" id="text" class="textarea" ng-model="qrcodeString" placeholder="YOUR TEXT TO ENCODE"></textarea>
+            <textarea type="text" id="expiry_date" class="textarea" ng-model="expiryDateString" placeholder="Enter Expiry Date"></textarea>
+        </p>
+        <p>
+            <label for="lot_no">LOT NO:</label>
+        </p>
+        <p>
+            <textarea type="text" id="lot_no" class="textarea" ng-model="lotNoString" placeholder="Enter Lot Number"></textarea>
         </p>
 
     </div>
-
+    <p>
+        <textarea type="text" id="vaccine_name" class="textarea" ng-model="nameString" placeholder="Enter Vaccine Name"></textarea>
+    </p>
 </div>

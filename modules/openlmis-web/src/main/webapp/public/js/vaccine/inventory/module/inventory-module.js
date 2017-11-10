@@ -8,10 +8,11 @@
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.   See the GNU Affero General Public License for more details.
  */
 
-angular.module('vaccine-inventory', ['openlmis','ngGrid', 'ngTable','ui.bootstrap','angularCombine','ui.bootstrap.modal','ui.bootstrap.pagination','barcodeGenerator','monospaced.qrcode'])
+angular.module('vaccine-inventory', ['openlmis','ngGrid', 'ngTable','ui.bootstrap','angularCombine','ui.bootstrap.modal','ui.bootstrap.pagination','barcodeGenerator','ja.qr'])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider.
             when('/generate-qrcode', {controller:GenerateQrcodeController, templateUrl:'partials/generate-qr.html',resolve:GenerateQrcodeController.resolve}).
+            when('/preview', {controller : ViewQrcodeDetailController, templateUrl: 'partials/print/view.html',resolve:ViewQrcodeDetailController.resolve}).
             when('/stock-adjustment', {controller:StockAdjustmentController, templateUrl:'partials/stock-adjustment.html',resolve:StockAdjustmentController.resolve}).
             when('/stock-adjustment-barcode', {controller:BarcodeStockAdjustmentController, templateUrl:'partials/stock-adjustment-barcode.html',resolve:BarcodeStockAdjustmentController.resolve}).
             when('/receive', {controller:ReceiveStockController, templateUrl:'partials/receive-stock.html',reloadOnSearch:false,resolve:ReceiveStockController.resolve}).
